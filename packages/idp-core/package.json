@@ -1,0 +1,22 @@
+{
+  "name": "idp-core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ad-sso-poc/shared": "1.0.0",
+    "express": "^4.19.2",
+    "ldapts": "^7.4.0",
+    "oidc-provider": "^8.5.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.4"
+  }
+}

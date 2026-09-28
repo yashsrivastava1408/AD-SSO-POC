@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS sessions (
+  id SERIAL PRIMARY KEY,
+  jti TEXT UNIQUE NOT NULL,
+  username TEXT NOT NULL,
+  client_id TEXT NOT NULL,
+  ip TEXT,
+  issued_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  revoked_at TIMESTAMPTZ
+);

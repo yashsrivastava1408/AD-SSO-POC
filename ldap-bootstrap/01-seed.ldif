@@ -1,0 +1,45 @@
+dn: ou=People,dc=adsso,dc=local
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Groups,dc=adsso,dc=local
+objectClass: organizationalUnit
+ou: Groups
+
+dn: uid=alice,ou=People,dc=adsso,dc=local
+objectClass: inetOrgPerson
+uid: alice
+cn: Alice Admin
+sn: Admin
+givenName: Alice
+mail: alice@adsso.local
+userPassword: Password123
+
+dn: uid=bob,ou=People,dc=adsso,dc=local
+objectClass: inetOrgPerson
+uid: bob
+cn: Bob Employee
+sn: Employee
+givenName: Bob
+mail: bob@adsso.local
+userPassword: Password123
+
+dn: uid=carol,ou=People,dc=adsso,dc=local
+objectClass: inetOrgPerson
+uid: carol
+cn: Carol Employee
+sn: Employee
+givenName: Carol
+mail: carol@adsso.local
+userPassword: Password123
+
+dn: cn=Admins,ou=Groups,dc=adsso,dc=local
+objectClass: groupOfNames
+cn: Admins
+member: uid=alice,ou=People,dc=adsso,dc=local
+
+dn: cn=Employees,ou=Groups,dc=adsso,dc=local
+objectClass: groupOfNames
+cn: Employees
+member: uid=bob,ou=People,dc=adsso,dc=local
+member: uid=carol,ou=People,dc=adsso,dc=local

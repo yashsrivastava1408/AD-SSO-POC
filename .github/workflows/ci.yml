@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: idp
+          POSTGRES_PASSWORD: idp_pw
+          POSTGRES_DB: idp_sessions
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # idp-core's tests hit a real LDAP bind, so start the real openldap
+      # container here too (docker-compose's postgres service is skipped since
+      # the "postgres" service above already provides it on the same port).
+      - name: Start OpenLDAP
+        run: docker compose up -d openldap
+
+      - name: Wait for OpenLDAP to be healthy
+        run: |
+          for i in $(seq 1 20); do
+            status=$(docker inspect -f '{{.State.Health.Status}}' ad-sso-poc-ldap 2>/dev/null || echo starting)
+            [ "$status" = "healthy" ] && exit 0
+            sleep 3
+          done
+          echo "openldap never became healthy" >&2
+          exit 1
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build frontends
+        run: npm run build
+
+      - name: Test
+        run: npm test

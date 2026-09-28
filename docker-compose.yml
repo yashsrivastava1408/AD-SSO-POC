@@ -1,0 +1,47 @@
+services:
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: ad-sso-poc-ldap
+    environment:
+      LDAP_ORGANISATION: 'AD SSO POC'
+      LDAP_DOMAIN: 'adsso.local'
+      LDAP_ADMIN_PASSWORD: 'AdminPass123'
+      LDAP_TLS: 'false'
+    ports:
+      - '3890:389'
+    volumes:
+      - ./ldap-bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom
+    command: ['--copy-service', '--loglevel', 'info']
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'ldapsearch',
+          '-x',
+          '-H',
+          'ldap://localhost:389',
+          '-b',
+          'dc=adsso,dc=local',
+          '-D',
+          'cn=admin,dc=adsso,dc=local',
+          '-w',
+          'AdminPass123',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ad-sso-poc-postgres
+    environment:
+      POSTGRES_USER: idp
+      POSTGRES_PASSWORD: idp_pw
+      POSTGRES_DB: idp_sessions
+    ports:
+      - '55432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U idp -d idp_sessions']
+      interval: 5s
+      timeout: 5s
+      retries: 10
