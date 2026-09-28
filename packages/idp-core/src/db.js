@@ -1,12 +1,24 @@
 import pg from 'pg';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const { Pool } = pg;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export function createPool() {
   return new Pool({
     connectionString:
       process.env.DATABASE_URL || 'postgres://idp:idp_pw@localhost:55432/idp_sessions',
   });
+}
+
+// schema.sql is just `CREATE TABLE IF NOT EXISTS`, so this is safe to run on every
+// startup — it's what lets a fresh database (e.g. a new Render Postgres instance)
+// provision itself with no manual migration step.
+export async function runMigrations(pool) {
+  const schema = readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+  await pool.query(schema);
 }
 
 export function createSessionStore(pool) {

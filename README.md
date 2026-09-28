@@ -34,11 +34,11 @@ flowchart TB
 
     PG[(Postgres<br/>session / activity log)]
 
-    subgraph SF["demo-storefront — :4001  (\"Northmart\")"]
+    subgraph SF["demo-storefront — :4001 (Northmart)"]
         SFC[OIDC relying party]
     end
 
-    subgraph DASH["dashboard — :4002  (\"Identity Dashboard\")"]
+    subgraph DASH["dashboard — :4002 (Identity Dashboard)"]
         DC[OIDC relying party<br/>+ admin UI]
     end
 
