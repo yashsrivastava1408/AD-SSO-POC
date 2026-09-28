@@ -1,0 +1,5 @@
+dn: dc=adsso,dc=local
+objectClass: dcObject
+objectClass: organization
+o: AD SSO POC
+dc: adsso

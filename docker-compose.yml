@@ -1,17 +1,13 @@
 services:
   openldap:
-    image: osixia/openldap:1.5.0
+    # Self-built image (ldap-bootstrap/Dockerfile) — see its comment for why this
+    # isn't osixia/openldap or bitnami/openldap.
+    build: ./ldap-bootstrap
     container_name: ad-sso-poc-ldap
     environment:
-      LDAP_ORGANISATION: 'AD SSO POC'
-      LDAP_DOMAIN: 'adsso.local'
       LDAP_ADMIN_PASSWORD: 'AdminPass123'
-      LDAP_TLS: 'false'
     ports:
       - '3890:389'
-    volumes:
-      - ./ldap-bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom
-    command: ['--copy-service', '--loglevel', 'info']
     healthcheck:
       test:
         [
